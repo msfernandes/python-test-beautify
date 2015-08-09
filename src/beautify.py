@@ -7,7 +7,7 @@ from unittest import TestResult
 
 class Color(object):
 
-    ngree_color = '\033[01;32m'
+    green_color = '\033[01;32m'
     red_color = '\033[01;31m'
     white_color = '\033[01;37m'
     blue_color = '\033[01;94m'
@@ -38,7 +38,11 @@ class _TextTestResult(TestResult):
 
     def addSuccess(self, test):
         TestResult.addSuccess(self, test)
-        self.stream.write(' OK\n')
+        self.stream.write(Color.green('OK') + '\n')
+
+    def addFailure(self, test, err):
+        TestResult.addFailure(self, test, err)
+        self.stream.write(Color.red('FAIL') + '\n')
 
 
 class TestBeautify(TestCase):
