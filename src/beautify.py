@@ -2,6 +2,7 @@
 from sys import stderr
 from re import findall
 from unittest import TestCase
+from unittest import TestResult
 
 
 class Color(object):
@@ -27,6 +28,17 @@ class Color(object):
     @classmethod
     def blue(cls, text):
         return "%s%s%s" % (cls.blue_color, text, cls.default_color)
+
+
+class _TextTestResult(TestResult):
+
+    def __init__(self, stream):
+        TestResult.__init__(self)
+        self.stream = stream
+
+    def addSuccess(self, test):
+        TestResult.addSuccess(self, test)
+        self.stream.write(' OK\n')
 
 
 class TestBeautify(TestCase):
@@ -55,9 +67,9 @@ class TestBeautify(TestCase):
         return out + ' '
 
     def run(self, result=None):
+        result = _TextTestResult(stderr)
         stderr.write(self.__str__())
         super(TestBeautify, self).run(result)
-        stderr.write(' Done\n')
 
     def shortDescription(self):
         return "Test from class %s" % self.__class__.__name__
