@@ -7,17 +7,22 @@ class TestBeautify(object):
 
     name = ''
     module = ''
+    distance = 70
 
-    def getName(self):
+    def get_name(self):
         """ Get the name of the test """
-        self.name = str(self.id).split('=')[-1][:-2]
-        self.name = self.name.split('test_')[-1]
-        self.name = self.name.replace('_', ' ')
+        self.method_name = str(self.id).split('=')[-1][:-2]
+        self.method_name = self.method_name.split('test_')[-1]
+        self.method_name = self.method_name.replace('_', ' ')
 
     def __str__(self):
-        self.getName()
-        out = '\r[%s] %s test ' % (self.module, self.name)
-        out = out.ljust(70, '-')
+        self.get_name()
+        if self.module is not '':
+            out = '\r[%s] %s test ' % (self.module, self.method_name)
+        else:
+            out = '\r[%s] %s test ' % (
+                self.__class__.__name__, self.method_name)
+        out = out.ljust(self.distance, '-')
         return out + ' '
 
     def tearDown(self):
