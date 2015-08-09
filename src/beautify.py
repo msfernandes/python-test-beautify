@@ -37,7 +37,7 @@ class TestBeautify(TestCase):
 
     def get_name(self):
         """ Get the name of the test """
-        self.method_name = str(self._testMethodName).split('=')[-1][:-2]
+        self.method_name = str(self.id).split('=')[-1][:-2]
         self.method_name = self.method_name.split('test_')[-1]
         self.method_name = self.method_name.replace('_', ' ')
 

@@ -20,10 +20,22 @@ class TestStringMethods(beautify.TestBeautify, unittest.TestCase):
             s.split(2)
 
 
-class TestNoModuleName(beautify.TestBeautify, unittest.TestCase):
+class NoModuleName(beautify.TestBeautify, unittest.TestCase):
 
     def test_upper(self):
         self.assertEqual('foo'.upper(), 'FOO')
+
+
+class OverwriteDefault(beautify.TestBeautify, unittest.TestCase):
+
+    def setUp(self):
+        self.foo = 'FOO'
+
+    def tearDown(self):
+        self.foo = None
+
+    def test_upper(self):
+        self.assertEqual('foo'.upper(), self.foo)
 
 if __name__ == '__main__':
     unittest.main()
