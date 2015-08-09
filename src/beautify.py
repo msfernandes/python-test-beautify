@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from sys import stderr
 from re import findall
+from unittest import TestCase
 
 
-class TestBeautify(object):
+class TestBeautify(TestCase):
 
     name = ''
     module = ''
@@ -11,7 +12,7 @@ class TestBeautify(object):
 
     def get_name(self):
         """ Get the name of the test """
-        self.method_name = str(self.id).split('=')[-1][:-2]
+        self.method_name = str(self._testMethodName).split('=')[-1][:-2]
         self.method_name = self.method_name.split('test_')[-1]
         self.method_name = self.method_name.replace('_', ' ')
 
@@ -26,12 +27,10 @@ class TestBeautify(object):
         out = out.ljust(self.distance, '-')
         return out + ' '
 
-    def tearDown(self):
+    def run(self, result=None):
+        stderr.write(self.__str__())
+        super(TestBeautify, self).run(result)
         stderr.write(' Done\n')
 
     def shortDescription(self):
         return "Test from class %s" % self.__class__.__name__
-
-    def setUp(self):
-        stderr.write(self.__str__())
-        self.shortDescription()
