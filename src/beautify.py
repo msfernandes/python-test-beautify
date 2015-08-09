@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from sys import stderr
-import unittest
+from re import findall
 
 
 class TestBeautify(object):
@@ -20,8 +20,9 @@ class TestBeautify(object):
         if self.module is not '':
             out = '\r[%s] %s test ' % (self.module, self.method_name)
         else:
-            out = '\r[%s] %s test ' % (
-                self.__class__.__name__, self.method_name)
+            self.module = findall('[A-Z][a-z]*', self.__class__.__name__)
+            self.module = ' '.join(self.module)
+            out = '\r[%s] %s test ' % (self.module, self.method_name)
         out = out.ljust(self.distance, '-')
         return out + ' '
 
