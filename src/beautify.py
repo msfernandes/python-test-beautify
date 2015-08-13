@@ -11,7 +11,12 @@ class Color(object):
     red_color = '\033[01;31m'
     white_color = '\033[01;37m'
     blue_color = '\033[01;94m'
+    black_color = '\033[01;30m'
     default_color = '\033[00;39m'
+
+    @classmethod
+    def black(cls, text):
+        return "%s%s%s" % (cls.black_color, text, cls.default_color)
 
     @classmethod
     def green(cls, text):
@@ -43,6 +48,10 @@ class _TextTestResult(TestResult):
     def addFailure(self, test, err):
         TestResult.addFailure(self, test, err)
         self.stream.write(Color.red('FAIL') + '\n')
+
+    def addError(self, test, err):
+        TestResult.addError(self, test, err)
+        self.stream.write(Color.black('Error') + '\n')
 
 
 class TestBeautify(TestCase):
