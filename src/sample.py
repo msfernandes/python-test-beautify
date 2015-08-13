@@ -6,10 +6,10 @@ class TestStringMethods(beautify.TestBeautify, unittest.TestCase):
     module = 'Sample'
 
     def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+        self.assertEqual('foo'.upper(), 'FOO0')
 
     def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
+        self.assertTrue('FOO'.isupaper())
         self.assertFalse('Foo'.isupper())
 
     def test_split(self):
