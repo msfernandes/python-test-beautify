@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from sys import stderr
 from re import findall
-from unittest import TestCase, TestResult
-from unittest.runner import TextTestResult
+try:
+    from unittest2 import TestCase, TestResult
+except ImportError:
+    from unittest import TestCase, TestResult
 
 
 class Color(object):
@@ -38,21 +40,19 @@ class Color(object):
 class _TextTestResult(TestResult):
 
     def __init__(self, stream):
-        super(TextTestResult, self).__init__(stream, '', 0)
+        super(_TextTestResult, self).__init__(stream)
         self.stream = stream
-        self.showAll = False
-        self.dots = False
 
     def addSuccess(self, test):
-        super(TextTestResult, self).addSuccess(test)
-        self.stream.write(Color.green('OK') + '\n')
+        super(_TextTestResult, self).addSuccess(test)
+        self.stream.write(Color.green('PASS') + '\n')
 
     def addFailure(self, test, err):
-        super(TextTestResult, self).addFailure(test, err)
+        super(_TextTestResult, self).addFailure(test, err)
         self.stream.write(Color.red('FAIL') + '\n')
 
     def addError(self, test, err):
-        super(TextTestResult, self).addError(test, err)
+        super(_TextTestResult, self).addError(test, err)
         self.stream.write(Color.black('Error') + '\n')
 
     def printErrors(self):
@@ -93,10 +93,14 @@ class TestBeautify(TestCase):
         return Color.red(desc)
 
     def run(self, result=None):
-        # result = self._makeResult()
+        # result = self.defaultTestResult()
+        print result
         stderr.write('\n' + self.__str__())
         super(TestBeautify, self).run(result)
         return result
+
+    def defaultTestResult(self):
+        return _TextTestResult(stderr)
 
     def _makeResult(self):
         return _TextTestResult(stderr)
