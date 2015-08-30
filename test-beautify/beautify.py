@@ -94,7 +94,6 @@ class TestBeautify(TestCase):
 
     def run(self, result=None):
         # result = self.defaultTestResult()
-        print result
         stderr.write('\n' + self.__str__())
         super(TestBeautify, self).run(result)
         return result
