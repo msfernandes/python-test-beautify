@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from sys import stderr
 from re import findall
-from unittest import TestCase
-from unittest import TestResult
+from unittest import TestCase, TestResult
+from unittest.runner import TextTestResult
 
 
 class Color(object):
@@ -38,20 +38,26 @@ class Color(object):
 class _TextTestResult(TestResult):
 
     def __init__(self, stream):
-        TestResult.__init__(self)
+        super(TextTestResult, self).__init__(stream, '', 0)
         self.stream = stream
+        self.showAll = False
+        self.dots = False
 
     def addSuccess(self, test):
-        TestResult.addSuccess(self, test)
+        super(TextTestResult, self).addSuccess(test)
         self.stream.write(Color.green('OK') + '\n')
 
     def addFailure(self, test, err):
-        TestResult.addFailure(self, test, err)
+        super(TextTestResult, self).addFailure(test, err)
         self.stream.write(Color.red('FAIL') + '\n')
 
     def addError(self, test, err):
-        TestResult.addError(self, test, err)
+        super(TextTestResult, self).addError(test, err)
         self.stream.write(Color.black('Error') + '\n')
+
+    def printErrors(self):
+        self.printErrorList(Color.black('ERROR'), self.errors)
+        self.printErrorList(Color.red('FAIL'), self.failures)
 
 
 class TestBeautify(TestCase):
@@ -74,15 +80,23 @@ class TestBeautify(TestCase):
             out = '\r[%s] %s test ' % (self.module, self.method_name)
 
         module = "%s%s%s" % ('[', self.module, ']')
-        method_name = "%s%s" % (self.method_name.capitalize(), 'Test')
+        method_name = "%s %s" % (self.method_name.lower(), 'test')
         out = "\r%s %s " % (Color.blue(module), Color.white(method_name))
         out = out.ljust(self.distance, '_')
         return out + ' '
 
-    def run(self, result=None):
-        result = _TextTestResult(stderr)
-        stderr.write(self.__str__())
-        super(TestBeautify, self).run(result)
-
     def shortDescription(self):
-        return "Test from class %s" % self.__class__.__name__
+        if self._testMethodDoc:
+            desc = self._testMethodDoc
+        else:
+            desc = "Test from method '%s'" % self.method_name.replace(' ', '_')
+        return Color.red(desc)
+
+    def run(self, result=None):
+        # result = self._makeResult()
+        stderr.write('\n' + self.__str__())
+        super(TestBeautify, self).run(result)
+        return result
+
+    def _makeResult(self):
+        return _TextTestResult(stderr)
